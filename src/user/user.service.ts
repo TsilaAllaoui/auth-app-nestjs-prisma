@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/createUser.dto';
@@ -74,13 +75,39 @@ export class UserService {
       throw new BadRequestException('Error while deleting user');
     }
   }
-}
 
-// async deleteUser() {
-//   try {
-//   }
-//   catch(err) {
-//     console.log(err);
-//     throw new BadRequestException("Error while deleting user");
-//   }
-// }
+  async getOneUser(id: string) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!user) throw new NotFoundException('No user with id ' + id + 'found');
+      return user;
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException('Error while getting user with id: ' + id);
+    }
+  }
+
+  async getOneUserWithEmail(email: string) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+
+      if (!user)
+        throw new NotFoundException('No user with email ' + email + 'found');
+      return user;
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(
+        'Error while getting user with email: ' + email,
+      );
+    }
+  }
+}

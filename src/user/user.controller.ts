@@ -24,6 +24,22 @@ export class UserController {
     return await this.userService.getAllUsers();
   }
 
+  @Get(':id')
+  @ApiOperation({
+    summary: 'Get specific user',
+  })
+  async getOneUser(@Param('id') id: string) {
+    return await this.userService.getOneUser(id);
+  }
+
+  @Get('/email/:email')
+  @ApiOperation({
+    summary: 'Get specific user',
+  })
+  async getOneUserWithEmail(@Param('email') email: string) {
+    return await this.userService.getOneUserWithEmail(email);
+  }
+
   @Post()
   @ApiOperation({
     summary: 'Create new user',
